@@ -1,11 +1,15 @@
 import { createApp } from '../utils/petite-vue.es.js'
 
+const useBase_url = () => ({
+  id: Date.now(),
+  target: '',
+  redirect: '',
+})
 const useBase_card = () => ({
   id: Date.now(),
   remark: '',
-  url: '',
   script: '',
-  redirect: '',
+  urls: [useBase_url()],
 })
 
 const initCards = await new Promise((resolve) => {
@@ -17,15 +21,26 @@ createApp({
   isEditor: false,
   editorContent: '',
   onUpdate() {
-    chrome.storage.local.set({ cards: [...this.cards] })
+    chrome.storage.local.set({ cards: JSON.parse(JSON.stringify(this.cards)) })
   },
-  onAdd(index) {
+  onCardAdd(index) {
     this.cards.splice(index + 1, 0, useBase_card())
     this.onUpdate()
   },
-  onDel(index) {
+  onCardDel(index) {
     this.cards.splice(index, 1)
     this.onUpdate()
+  },
+  onUrlAdd(urls, index) {
+    urls.splice(index + 1, 0, useBase_url())
+    this.onUpdate()
+  },
+  onUrlDel(urls, index) {
+    urls.splice(index, 1)
+    this.onUpdate()
+  },
+  onUrlOpen(url) {
+    chrome.tabs.create({ url })
   },
   async onExecution({ script, redirect }) {
     script = script.trim()

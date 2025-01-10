@@ -20,17 +20,20 @@
       <div>
         <button @click="onEditor">编辑JSON</button>
       </div>
-      <div class="card" v-for="item, index in cards" :key="item.id">
+      <div class="card" v-for="card, cardI in cards" :key="card.id">
         <div class="header">
-          <input placeholder="备注" v-model="item.remark" @change="onUpdate"></input>
-          <input placeholder="此网址自动执行" v-model="item.url" @change="onUpdate"></input>
+          <button @click="onExecution(card)">{{ cardI + 1 }}. 执行</button>
+          <input placeholder="备注" v-model="card.remark" @change="onUpdate"></input>
+          <button @click="onCardAdd(cardI)">新增</button>
+          <button @click="onCardDel(cardI)" theme="red" :disabled="cards.length === 1">删除</button>
         </div>
-        <textarea placeholder="* 脚本" rows="4" v-model="item.script" @change="onUpdate"></textarea>
-        <div class="down">
-          <button @click="onExecution(item)">执行</button>
-          <input placeholder="执行后重定向到" v-model="item.redirect" @change="onUpdate"></input>
-          <button @click="onAdd(index)">+</button>
-          <button @click="onDel(index)" theme="red" :disabled="cards.length === 1">x</button>
+        <textarea placeholder="* 脚本" rows="6" v-model="card.script" @change="onUpdate"></textarea>
+        <div class="url" v-for="url, urlI in card.urls" :key="url.id">
+          <button @click="onUrlAdd(card.urls, urlI)">+</button>
+          <button @click="onUrlDel(card.urls, urlI)" theme="red" :disabled="card.urls.length === 1">x</button>
+          <input placeholder="此网址自动执行" v-model="url.target" @change="onUpdate"></input>
+          <button class="open" @click="onUrlOpen(url.target)">↗</button>
+          <input class="redirect" placeholder="执行后重定向到" v-model="url.redirect" @change="onUpdate"></input>
         </div>
       </div>
     </div>
