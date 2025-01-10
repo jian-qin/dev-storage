@@ -3,7 +3,8 @@ sessionStorage.getItem('dev-storage_content-inited') || chrome.runtime.sendMessa
   key: 'cards'
 }, (cards = []) => {
   let result = null
-  cards.some(({ urls, script }) => {
+  cards.some(({ enable, urls, script }) => {
+    if (!enable) return
     if (!script.trim()) return
     const url = urls.find(({ target }) => location.href.startsWith(target.trim()))
     if (url) {

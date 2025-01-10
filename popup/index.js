@@ -1,4 +1,4 @@
-import { createApp } from '../utils/petite-vue.es.js'
+import { createApp, nextTick } from '../utils/petite-vue.es.js'
 
 const useBase_url = () => ({
   id: Date.now(),
@@ -7,6 +7,7 @@ const useBase_url = () => ({
 })
 const useBase_card = () => ({
   id: Date.now(),
+  enable: true,
   remark: '',
   script: '',
   urls: [useBase_url()],
@@ -23,9 +24,16 @@ createApp({
   onUpdate() {
     chrome.storage.local.set({ cards: JSON.parse(JSON.stringify(this.cards)) })
   },
-  onCardAdd(index) {
+  async onCardAdd(index) {
     this.cards.splice(index + 1, 0, useBase_card())
     this.onUpdate()
+    await nextTick()
+    const cardEl = document.querySelectorAll('.card')[index + 1]
+    cardEl.querySelector('textarea').focus()
+    cardEl.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+    })
   },
   onCardDel(index) {
     this.cards.splice(index, 1)
@@ -42,9 +50,8 @@ createApp({
   onUrlOpen(url) {
     chrome.tabs.create({ url })
   },
-  async onExecution({ script, redirect }) {
+  async onExecution({ script }) {
     script = script.trim()
-    redirect = redirect.trim()
     if (!script) {
       alert('请输入脚本内容！')
       return
@@ -52,8 +59,7 @@ createApp({
     const tabId = await new Promise((resolve) => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs[0].id))
     })
-    redirect = redirect ? `location.replace("${redirect}")` : `location.reload()`
-    const code = `;${script};${redirect};'SUCCESS';`
+    const code = `;${script};location.reload();'SUCCESS';`
     chrome.tabs.executeScript(tabId, { code }, ([succ] = []) => {
       if (chrome.runtime.lastError) {
         alert(chrome.runtime.lastError.message)

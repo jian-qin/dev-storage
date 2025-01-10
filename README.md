@@ -23,4 +23,4 @@ English | [简体中文](./README.zh-CN.md)
 | `Remark` | Used to identify the name of the script | `xxx - uat` | No |
 | `Automatically execute this URL` | Automatically execute when this page is opened | `https://xxx.com/` | No |
 | `Script` | Custom script content | `alert('Hello World!')` | Yes |
-| `Redirect to after execution` | The URL to redirect to after executing the script (default is the current URL if not filled in) | `/#/xxx` | No |
+| `Redirect to after automatic execution` | The URL to redirect to after the script is automatically executed (default is the current URL if not filled in) | `/#/xxx` | No |

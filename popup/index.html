@@ -10,30 +10,31 @@
 <body>
   <div v-scope>
     <div class="editor" v-if="isEditor">
-      <textarea placeholder="JSON内容" v-model="editorContent"></textarea>
+      <textarea theme="primary" placeholder="JSON内容" v-model="editorContent"></textarea>
       <div>
-        <button @click="onEditor">取消</button>
-        <button @click="onSave">保存</button>
+        <button theme="primary" @click="onEditor">取消</button>
+        <button theme="primary" @click="onSave">保存</button>
       </div>
     </div>
     <div v-else>
       <div>
-        <button @click="onEditor">编辑JSON</button>
+        <button theme="primary" @click="onEditor">编辑JSON</button>
       </div>
       <div class="card" v-for="card, cardI in cards" :key="card.id">
         <div class="header">
-          <button @click="onExecution(card)">{{ cardI + 1 }}. 执行</button>
-          <input placeholder="备注" v-model="card.remark" @change="onUpdate"></input>
-          <button @click="onCardAdd(cardI)">新增</button>
-          <button @click="onCardDel(cardI)" theme="red" :disabled="cards.length === 1">删除</button>
+          <button theme="primary" @click="onExecution(card)">{{ cardI + 1 }}. 执行</button>
+          <input theme="switch" type="checkbox" v-model="card.enable" @change="onUpdate"></input>
+          <input theme="primary" placeholder="备注" v-model="card.remark" @change="onUpdate"></input>
+          <button theme="primary" @click="onCardAdd(cardI)">新增</button>
+          <button theme="red" @click="onCardDel(cardI)" :disabled="cards.length === 1">删除</button>
         </div>
-        <textarea placeholder="* 脚本" rows="6" v-model="card.script" @change="onUpdate"></textarea>
+        <textarea theme="primary" placeholder="* 脚本" rows="6" v-model="card.script" @change="onUpdate"></textarea>
         <div class="url" v-for="url, urlI in card.urls" :key="url.id">
-          <button @click="onUrlAdd(card.urls, urlI)">+</button>
-          <button @click="onUrlDel(card.urls, urlI)" theme="red" :disabled="card.urls.length === 1">x</button>
-          <input placeholder="此网址自动执行" v-model="url.target" @change="onUpdate"></input>
-          <button class="open" @click="onUrlOpen(url.target)">↗</button>
-          <input class="redirect" placeholder="执行后重定向到" v-model="url.redirect" @change="onUpdate"></input>
+          <button theme="primary" @click="onUrlAdd(card.urls, urlI)">+</button>
+          <button theme="red" @click="onUrlDel(card.urls, urlI)" :disabled="card.urls.length === 1">x</button>
+          <input theme="primary" placeholder="此网址自动执行" v-model="url.target" @change="onUpdate"></input>
+          <button theme="primary" class="open" @click="onUrlOpen(url.target)">↗</button>
+          <input theme="primary" class="redirect" placeholder="自动执行后重定向到" v-model="url.redirect" @change="onUpdate"></input>
         </div>
       </div>
     </div>

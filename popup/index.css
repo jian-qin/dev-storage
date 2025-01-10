@@ -3,12 +3,55 @@
   font-size: 14px;
   font-family: Inter, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
 }
+*{
+  margin: 0;
+  padding: 0;
+  outline: none;
+  text-decoration: none;
+  list-style: none;
+}
 body{
   margin: 14px;
   margin-right: 0;
   width: calc(100vw - 28px);
 }
-input, textarea{
+
+input[theme="switch"]{
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  box-sizing: content-box;
+  width: 2.6rem;
+  height: 1.4rem;
+  border: 1px solid #ccc;
+  outline: 0;
+  border-radius: .75rem;
+  background-color: rgba(0, 0, 0, 0.1);
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  flex-shrink: 0;
+}
+input[theme="switch"]:checked{
+  border-color: #409eff;
+  background-color: #409eff;
+}
+input[theme="switch"]::after{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: .7rem;
+  background-color: #fff;
+  box-shadow: 0 0 2px #999;
+  transition: left 0.3s;
+}
+input[theme="switch"]:checked:after{
+  left: 1.2rem;
+}
+
+input[theme="primary"], textarea[theme="primary"]{
   width: 100%;
   border: none;
   border-radius: 10px;
@@ -21,33 +64,34 @@ input, textarea{
   transition: background-color 0.3s;
   resize: vertical;
 }
-input::placeholder, textarea::placeholder{
+input[theme="primary"]::placeholder, textarea[theme="primary"]::placeholder{
   color: #a8abb2;
 }
-input:focus, textarea:focus{
+input[theme="primary"]:focus, textarea[theme="primary"]:focus{
   outline: 1px solid #409eff;
 }
-input:hover, textarea:hover,
-input:active, textarea:active{
+input[theme="primary"]:hover, textarea[theme="primary"]:hover,
+input[theme="primary"]:active, textarea[theme="primary"]:active{
   background-color: #f2f2f2;
 }
-button{
+button[theme]{
   border: none;
   border-radius: 6px;
   padding: 5px 10px;
-  background-color: #409eff;
   font-size: 14px;
   color: white;
   cursor: pointer;
   transition: background-color 0.3s;
-  flex-shrink: 0;
 }
-button:disabled{
+button[theme]:disabled{
   opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
-button:hover{
+button[theme="primary"]{
+  background-color: #409eff;
+}
+button[theme="primary"]:hover{
   background-color: rgb(121.3, 187.1, 255);
 }
 button[theme="red"]{
@@ -75,6 +119,9 @@ button[theme="red"]:hover{
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.card button{
+  flex-shrink: 0;
 }
 .card>.header{
   display: flex;
