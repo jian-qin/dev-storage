@@ -27,7 +27,9 @@ createApp({
     this.cards.splice(index, 1)
     this.onUpdate()
   },
-  async onExecution({ script, redirect = '' }) {
+  async onExecution({ script, redirect }) {
+    script = script.trim()
+    redirect = redirect.trim()
     if (!script) {
       alert('请输入脚本内容！')
       return
@@ -35,7 +37,6 @@ createApp({
     const tabId = await new Promise((resolve) => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs[0].id))
     })
-    redirect = redirect.trim()
     redirect = redirect ? `location.replace("${redirect}")` : `location.reload()`
     const code = `;${script};${redirect};'SUCCESS';`
     chrome.tabs.executeScript(tabId, { code }, ([succ] = []) => {
