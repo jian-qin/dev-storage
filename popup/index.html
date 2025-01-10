@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<link>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../utils/scrollbar.css"></link>
+  <link rel="stylesheet" href="./index.css"></link>
+  <script type="module" src="./index.js"></script>
+</head>
+<body>
+  <div v-scope>
+    <div class="editor" v-if="isEditor">
+      <textarea placeholder="JSON内容" v-model="editorContent"></textarea>
+      <div>
+        <button @click="onEditor">取消</button>
+        <button @click="onSave">保存</button>
+      </div>
+    </div>
+    <div v-else>
+      <div>
+        <button @click="onEditor">编辑JSON</button>
+      </div>
+      <div class="card" v-for="item, index in cards" :key="item.id">
+        <div class="header">
+          <input placeholder="备注" v-model="item.remark" @change="onUpdate"></input>
+          <input placeholder="此网址自动执行" v-model="item.url" @change="onUpdate"></input>
+        </div>
+        <textarea placeholder="* 脚本" rows="4" v-model="item.script" @change="onUpdate"></textarea>
+        <div class="down">
+          <button @click="onExecution(item)">执行</button>
+          <input placeholder="执行后重定向到" v-model="item.redirect" @change="onUpdate"></input>
+          <button @click="onAdd(index)">+</button>
+          <button @click="onDel(index)" theme="red" :disabled="cards.length === 1">x</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
