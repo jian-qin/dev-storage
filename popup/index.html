@@ -8,15 +8,15 @@
   <script type="module" src="./index.js"></script>
 </head>
 <body>
-  <div v-scope @vue:mounted="onMounted">
-    <div class="editor" v-if="isEditor">
+  <div id="app" v-scope @vue:mounted="onMounted">
+    <div id="editor" v-if="isEditor">
       <textarea theme="primary" placeholder="JSON内容" v-model="editorContent"></textarea>
       <div>
         <button theme="primary" @click="onEditor">取消</button>
         <button theme="primary" @click="onSave">保存</button>
       </div>
     </div>
-    <div v-else>
+    <div id="content" v-else>
       <div class="top">
         <button theme="primary" @click="onEditor">编辑JSON</button>
         <span class="version" v-if="version.current === version.latest">v{{ version.current }}</span>

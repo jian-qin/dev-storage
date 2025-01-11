@@ -1,5 +1,5 @@
 :root{
-  width: calc(800px - 28px);
+  width: calc(800px - 11px);
 }
 *{
   margin: 0;
@@ -8,12 +8,14 @@
   text-decoration: none;
   list-style: none;
 }
-body{
+#app{
   font-size: 14px;
   font-family: Inter, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
-  margin: 14px;
-  margin-right: 0;
-  width: calc(100vw - 28px);
+  max-height: 600px;
+  overflow-y: scroll;
+  padding: 16px;
+  padding-right: 7px;
+  box-sizing: border-box;
 }
 
 input[theme="switch"]{
@@ -101,13 +103,16 @@ button[theme="red"]:hover{
   background-color: rgb(248, 152.1, 152.1);
 }
 
-.editor{
-  height: calc(100vh - 28px);
+#editor{
+  min-height: calc(600px - 32px);
   display: grid;
   grid-template-rows: 1fr auto;
   gap: 10px;
 }
-.editor button+button{
+#editor>textarea{
+  resize: none;
+}
+#editor button+button{
   margin-left: 10px;
 }
 
@@ -121,7 +126,7 @@ button[theme="red"]:hover{
   color: #606266;
 }
 .card{
-  margin: 18px 0;
+  margin-top: 16px;
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);

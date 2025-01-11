@@ -1,4 +1,5 @@
 import { createApp, nextTick } from '../utils/petite-vue.es.js'
+import { scrollToView } from '../utils/tools.js'
 
 const useBase_url = () => ({
   id: Date.now(),
@@ -16,7 +17,7 @@ const useBase_card = () => ({
 const storage = await new Promise((resolve) => {
   chrome.storage.local.get(['cards', 'version'], (result) => {
     result.cards ??= [useBase_card()]
-    result.version ??= { latest: '', lastCheck: 0 }
+    result.version ??= {}
     resolve(result)
   })
 })
@@ -38,6 +39,7 @@ createApp({
         lastCheck: Date.now(),
         download: tag.zipball_url,
       }
+      chrome.storage.local.set({ version: this.version })
     }
   },
   onUpdateVersion() {
@@ -51,10 +53,14 @@ createApp({
     this.onUpdate()
     await nextTick()
     const cardEl = document.querySelectorAll('.card')[index + 1]
-    cardEl.querySelector('textarea').focus()
-    cardEl.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
+    scrollToView({
+      scroll: document.querySelector('#app'),
+      target: cardEl,
+      direction: 'vertical',
+      location: 'start',
+      callback() {
+        cardEl.querySelector('textarea').focus()
+      },
     })
   },
   onCardDel(index) {
@@ -94,10 +100,12 @@ createApp({
       window.close()
     })
   },
-  onEditor() {
+  async onEditor() {
     this.isEditor = !this.isEditor
     if (this.isEditor) {
       this.editorContent = JSON.stringify(this.cards, null, 2)
+      await nextTick()
+      document.querySelector('#editor>textarea').focus()
     }
   },
   onSave() {
