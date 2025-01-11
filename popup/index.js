@@ -13,14 +13,36 @@ const useBase_card = () => ({
   urls: [useBase_url()],
 })
 
-const initCards = await new Promise((resolve) => {
-  chrome.storage.local.get('cards', ({ cards = [useBase_card()] }) => resolve(cards))
+const storage = await new Promise((resolve) => {
+  chrome.storage.local.get(['cards', 'version'], (result) => {
+    result.cards ??= [useBase_card()]
+    result.version ??= { latest: '', lastCheck: 0 }
+    resolve(result)
+  })
 })
 
 createApp({
-  cards: initCards,
+  cards: storage.cards,
   isEditor: false,
   editorContent: '',
+  version: {
+    ...storage.version,
+    current: chrome.runtime.getManifest().version,
+  },
+  async onMounted() {
+    if (this.version.lastCheck < Date.now() - 1000 * 60 * 60 * 24) {
+      const [tag] = await fetch('https://api.github.com/repos/jian-qin/dev-storage/tags').then((res) => res.json())
+      this.version = {
+        current: this.version.current,
+        latest: tag.name.replace('v', ''),
+        lastCheck: Date.now(),
+        download: tag.zipball_url,
+      }
+    }
+  },
+  onUpdateVersion() {
+    chrome.tabs.create({ url: this.version.download })
+  },
   onUpdate() {
     chrome.storage.local.set({ cards: JSON.parse(JSON.stringify(this.cards)) })
   },

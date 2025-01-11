@@ -8,7 +8,7 @@
   <script type="module" src="./index.js"></script>
 </head>
 <body>
-  <div v-scope>
+  <div v-scope @vue:mounted="onMounted">
     <div class="editor" v-if="isEditor">
       <textarea theme="primary" placeholder="JSON内容" v-model="editorContent"></textarea>
       <div>
@@ -17,8 +17,10 @@
       </div>
     </div>
     <div v-else>
-      <div>
+      <div class="top">
         <button theme="primary" @click="onEditor">编辑JSON</button>
+        <span class="version" v-if="version.current === version.latest">v{{ version.current }}</span>
+        <button theme="red" @click="onUpdateVersion" v-else>新版本 v{{ version.current }} ⇢ v{{ version.latest }}</button>
       </div>
       <div class="card" v-for="card, cardI in cards" :key="card.id">
         <div class="header">
