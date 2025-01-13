@@ -1,6 +1,11 @@
 import { createApp, nextTick } from '../utils/petite-vue.es.js'
 import { scrollToView } from '../utils/tools.js'
 
+document.startViewTransition ||= callback => {
+  callback()
+  return { finished: nextTick() }
+}
+
 const useBase_url = () => ({
   id: Date.now(),
   target: '',
@@ -17,7 +22,7 @@ const useBase_card = () => ({
 const storage = await new Promise((resolve) => {
   chrome.storage.local.get(['cards', 'version'], (result) => {
     result.cards ??= [useBase_card()]
-    result.version ??= {}
+    result.version ??= { lastCheck: 0 }
     resolve(result)
   })
 })
@@ -49,41 +54,44 @@ createApp({
     chrome.storage.local.set({ cards: JSON.parse(JSON.stringify(this.cards)) })
   },
   async onCardAdd(index) {
-    this.cards.splice(index + 1, 0, useBase_card())
-    this.onUpdate()
-    await nextTick()
+    await document.startViewTransition(() => {
+      this.cards.splice(index + 1, 0, useBase_card())
+      this.onUpdate()
+    }).finished
     const cardEl = document.querySelectorAll('.card')[index + 1]
     scrollToView({
       scroll: document.querySelector('#app'),
       target: cardEl,
       direction: 'vertical',
       location: 'start',
+      offset: 14,
       callback() {
         cardEl.querySelector('textarea').focus()
       },
     })
   },
   onCardDel(index) {
-    this.cards.splice(index, 1)
-    this.onUpdate()
+    document.startViewTransition(() => {
+      this.cards.splice(index, 1)
+      this.onUpdate()
+    })
   },
   onUrlAdd(urls, index) {
-    urls.splice(index + 1, 0, useBase_url())
-    this.onUpdate()
+    document.startViewTransition(() => {
+      urls.splice(index + 1, 0, useBase_url())
+      this.onUpdate()
+    })
   },
   onUrlDel(urls, index) {
-    urls.splice(index, 1)
-    this.onUpdate()
+    document.startViewTransition(() => {
+      urls.splice(index, 1)
+      this.onUpdate()
+    })
   },
   onUrlOpen(url) {
     chrome.tabs.create({ url })
   },
   async onExecution({ script }) {
-    script = script.trim()
-    if (!script) {
-      alert('请输入脚本内容！')
-      return
-    }
     const tabId = await new Promise((resolve) => {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => resolve(tabs[0].id))
     })
@@ -100,13 +108,11 @@ createApp({
       window.close()
     })
   },
-  async onEditor() {
-    this.isEditor = !this.isEditor
-    if (this.isEditor) {
+  onEditor() {
+    document.startViewTransition(() => {
       this.editorContent = JSON.stringify(this.cards, null, 2)
-      await nextTick()
-      document.querySelector('#editor>textarea').focus()
-    }
+      this.isEditor = !this.isEditor
+    })
   },
   onSave() {
     try {

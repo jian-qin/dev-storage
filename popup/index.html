@@ -22,20 +22,20 @@
         <span class="version" v-if="version.current === version.latest">v{{ version.current }}</span>
         <button theme="red" @click="onUpdateVersion" v-else>新版本 v{{ version.current }} ⇢ v{{ version.latest }}</button>
       </div>
-      <div class="card" v-for="card, cardI in cards" :key="card.id">
+      <div class="card" :style="`view-transition-name: card-${card.id}`" v-for="card, cardI in cards" :key="card.id">
         <div class="header">
-          <button theme="primary" @click="onExecution(card)">{{ cardI + 1 }}. 执行</button>
+          <button theme="primary" :disabled="!card.script.trim()" @click="onExecution(card)">{{ cardI + 1 }}. 执行</button>
           <input theme="switch" type="checkbox" v-model="card.enable" @change="onUpdate"></input>
           <input theme="primary" placeholder="备注" v-model="card.remark" @change="onUpdate"></input>
           <button theme="primary" @click="onCardAdd(cardI)">新增</button>
           <button theme="red" @click="onCardDel(cardI)" :disabled="cards.length === 1">删除</button>
         </div>
         <textarea theme="primary" placeholder="* 脚本" rows="6" v-model="card.script" @change="onUpdate"></textarea>
-        <div class="url" v-for="url, urlI in card.urls" :key="url.id">
+        <div class="url" :style="`view-transition-name: url-${url.id}`" v-for="url, urlI in card.urls" :key="url.id">
           <button theme="primary" @click="onUrlAdd(card.urls, urlI)">+</button>
           <button theme="red" @click="onUrlDel(card.urls, urlI)" :disabled="card.urls.length === 1">x</button>
           <input theme="primary" placeholder="此网址自动执行" v-model="url.target" @change="onUpdate"></input>
-          <button theme="primary" class="open" @click="onUrlOpen(url.target)">↗</button>
+          <button theme="primary" class="open" :disabled="!url.target.trim()" @click="onUrlOpen(url.target)">↗</button>
           <input theme="primary" class="redirect" placeholder="自动执行后重定向到" v-model="url.redirect" @change="onUpdate"></input>
         </div>
       </div>

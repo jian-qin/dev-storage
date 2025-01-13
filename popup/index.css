@@ -11,7 +11,7 @@
 #app{
   font-size: 14px;
   font-family: Inter, Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, 微软雅黑, Arial, sans-serif;
-  max-height: 600px;
+  height: 600px;
   overflow-y: scroll;
   padding: 16px;
   padding-right: 7px;
@@ -77,6 +77,7 @@ input[theme="primary"]:active, textarea[theme="primary"]:active{
   background-color: #f2f2f2;
 }
 button[theme]{
+  user-select: none;
   border: none;
   border-radius: 6px;
   padding: 5px 10px;
@@ -104,6 +105,7 @@ button[theme="red"]:hover{
 }
 
 #editor{
+  view-transition-name: editor;
   min-height: calc(600px - 32px);
   display: grid;
   grid-template-rows: 1fr auto;
@@ -116,6 +118,9 @@ button[theme="red"]:hover{
   margin-left: 10px;
 }
 
+#content{
+  view-transition-name: content;
+}
 .top{
   display: flex;
   align-items: center;

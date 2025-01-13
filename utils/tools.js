@@ -20,9 +20,10 @@ export function scrollToView({
 }) {
   const isHorizontal = direction === 'horizontal'
   const scrollNum = scroll[isHorizontal ? 'scrollLeft' : 'scrollTop']
+  const scrollSize = scroll[isHorizontal ? 'clientWidth' : 'clientHeight']
+  const scrollMax = scroll[isHorizontal ? 'scrollWidth' : 'scrollHeight'] - scrollSize
   const targetOffset = target[isHorizontal ? 'offsetLeft' : 'offsetTop']
   const targetSize = target[isHorizontal ? 'offsetWidth' : 'offsetHeight']
-  const scrollSize = scroll[isHorizontal ? 'clientWidth' : 'clientHeight']
   let num
   const map = {
     start: targetOffset - offset,
@@ -43,7 +44,8 @@ export function scrollToView({
   } else {
     num = map[location]
   }
-  if (num === scrollNum) {
+  if (num < 0) num = 0
+  if (num === scrollNum || (num > scrollNum && scrollNum === scrollMax)) {
     callback?.()
     return
   }
